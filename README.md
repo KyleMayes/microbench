@@ -1,5 +1,7 @@
 # microbench
 
+[![Travis CI](https://travis-ci.org/KyleMayes/microbench.svg?branch=master)](https://travis-ci.org/KyleMayes/microbench)
+
 A micro-benchmarking library.
 
 Inspired by [core_bench](https://github.com/janestreet/core_bench).
