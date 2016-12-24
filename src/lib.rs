@@ -32,6 +32,17 @@ use std::time::{Duration};
 // Structs
 //================================================
 
+// Analysis ______________________________________
+
+/// An analysis of a set of timing data.
+#[derive(Copy, Clone, Debug)]
+pub struct Analysis {
+    /// The slope of the linear regression estimator.
+    pub beta: f64,
+    /// The goodness of fit of the linear regression estimator.
+    pub r2: f64,
+}
+
 // GeometricSequence _____________________________
 
 /// Generates unique values from a geometric sequence.
@@ -149,6 +160,39 @@ impl Stopwatch {
 //================================================
 // Functions
 //================================================
+
+fn mean<I>(iterator: I) -> f64 where I: Iterator<Item=f64> {
+    let (sum, len) = iterator.fold((0.0, 0), |a, f| (a.0 + f, a.1 + 1));
+    sum / len as f64
+}
+
+/// Analyzes the supplied timing data and returns the resulting analysis.
+pub fn analyze(measurements: &[Measurement]) -> Analysis {
+    let xmean = mean(measurements.iter().map(|m| m.iterations as f64));
+    let ymean = mean(measurements.iter().map(|m| m.nanoseconds as f64));
+
+    // Ordinary least squares estimator.
+    let numerator = measurements.iter().map(|m| {
+        (m.iterations as f64 - xmean) * (m.nanoseconds as f64 - ymean)
+    }).sum::<f64>();
+    let denominator = measurements.iter().map(|m| {
+        (m.iterations as f64 - xmean).powf(2.0)
+    }).sum::<f64>();
+    let beta = numerator / denominator;
+    let alpha = ymean - (beta * xmean);
+    let estimator = |x: u64| (beta * x as f64) + alpha;
+
+    // Ordinary least squares goodness of fit.
+    let numerator = measurements.iter().map(|m| {
+        (estimator(m.iterations) - ymean).powf(2.0)
+    }).sum::<f64>();
+    let denominator = measurements.iter().map(|m| {
+        (m.nanoseconds as f64 - ymean).powf(2.0)
+    }).sum::<f64>();
+    let r2 = numerator / denominator;
+
+    Analysis { beta: beta, r2: r2 }
+}
 
 /// Measures the execution time of the supplied function and returns the resulting samples.
 pub fn measure<T, F>(options: &Options, mut f: F) -> Vec<Measurement> where F: FnMut() -> T {
