@@ -26,9 +26,46 @@
 extern crate test;
 extern crate time;
 
+use std::time::{Duration};
+
 //================================================
 // Structs
 //================================================
+
+// Options _______________________________________
+
+/// Micro-benchmarking options.
+#[derive(Copy, Clone, Debug)]
+pub struct Options {
+    factor: f64,
+    maximum: u64,
+}
+
+impl Default for Options {
+    fn default() -> Options {
+        Options { factor: 1.01, maximum: 5_000_000_000 }
+    }
+}
+
+impl Options {
+    //- Consumers --------------------------------
+
+    /// Sets the geometric growth factor.
+    ///
+    /// **Default:** `1.01`
+    pub fn factor(mut self, factor: f64) -> Self {
+        self.factor = factor;
+        self
+    }
+
+    /// Sets the maximum amount of time a micro-benchmark will run for.
+    ///
+    /// **Default:** `Duration::new(5, 0)`
+    pub fn maximum(mut self, maximum: Duration) -> Self {
+        self.maximum = (maximum.as_secs() * 1_000_000_000) + maximum.subsec_nanos() as u64;
+        self
+    }
+}
 
 // Stopwatch _____________________________________
 
