@@ -194,6 +194,13 @@ pub fn analyze(measurements: &[Measurement]) -> Analysis {
     Analysis { beta: beta, r2: r2 }
 }
 
+/// Micro-benchmarks the supplied function.
+pub fn bench<T, F>(options: &Options, name: &str, f: F) where F: FnMut() -> T {
+    let analysis = analyze(&measure(options, f));
+    let prefix = format!("{} ... bench:", name);
+    println!("{:<32} {:.3} ns/iter ({:.3} R²)", prefix, analysis.beta, analysis.r2);
+}
+
 /// Measures the execution time of the supplied function and returns the resulting samples.
 pub fn measure<T, F>(options: &Options, mut f: F) -> Vec<Measurement> where F: FnMut() -> T {
     let mut measurements = vec![];
