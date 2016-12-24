@@ -15,4 +15,6 @@ repository = "https://github.com/KyleMayes/microbench"
 
 [dependencies]
 
+time = "0.1.35"
+
 clippy = { version = "0.0.*", optional = true }

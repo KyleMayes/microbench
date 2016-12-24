@@ -21,8 +21,45 @@
 #![cfg_attr(feature="clippy", feature(plugin))]
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(feature="clippy", warn(clippy))]
+#![cfg_attr(feature="clippy", allow(new_without_default_derive))]
 
 extern crate test;
+extern crate time;
+
+//================================================
+// Structs
+//================================================
+
+// Stopwatch _____________________________________
+
+/// A high-precision stopwatch.
+#[derive(Clone, Copy, Debug)]
+pub struct Stopwatch {
+    start: u64,
+}
+
+impl Stopwatch {
+    //- Constructors -----------------------------
+
+    /// Constructs a new `Stopwatch`.
+    pub fn new() -> Self {
+        Stopwatch { start: time::precise_time_ns() }
+    }
+
+    //- Accessors --------------------------------
+
+    /// Returns the elapsed nanoseconds since this stopwatch was constructed or reset.
+    pub fn elapsed(&self) -> u64 {
+        time::precise_time_ns() - self.start
+    }
+
+    //- Mutators ---------------------------------
+
+    /// Resets this stopwatch.
+    pub fn reset(&mut self) {
+        self.start = time::precise_time_ns();
+    }
+}
 
 //================================================
 // Functions
