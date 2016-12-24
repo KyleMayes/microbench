@@ -60,6 +60,26 @@ impl Iterator for GeometricSequence {
     }
 }
 
+// Measurement ___________________________________
+
+/// A measurement of the execution time of a function.
+#[derive(Copy, Clone, Debug)]
+pub struct Measurement {
+    /// The number of times the function was called.
+    pub iterations: u64,
+    /// The number of nanoseconds that elapsed while calling the function.
+    pub nanoseconds: u64,
+}
+
+impl Measurement {
+    //- Constructors -----------------------------
+
+    /// Constructs a new `Measurement`.
+    pub fn new(iterations: u64, nanoseconds: u64) -> Self {
+        Measurement { iterations: iterations, nanoseconds: nanoseconds }
+    }
+}
+
 // Options _______________________________________
 
 /// Micro-benchmarking options.
@@ -129,6 +149,20 @@ impl Stopwatch {
 //================================================
 // Functions
 //================================================
+
+/// Measures the execution time of the supplied function and returns the resulting samples.
+pub fn measure<T, F>(options: &Options, mut f: F) -> Vec<Measurement> where F: FnMut() -> T {
+    let mut measurements = vec![];
+    let mut sequence = GeometricSequence::new(1, options.factor);
+    let total = Stopwatch::new();
+    while total.elapsed() < options.maximum {
+        let iterations = sequence.next().unwrap();
+        let sample = Stopwatch::new();
+        for _ in 0..iterations { retain(f()); }
+        measurements.push(Measurement::new(iterations, sample.elapsed()));
+    }
+    measurements
+}
 
 /// A function that prevents the optimizer from eliminating the supplied value.
 pub fn retain<T>(value: T) -> T {
