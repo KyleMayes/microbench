@@ -1,0 +1,7 @@
+target/
+crustacean-executable/target/
+crustacean-plugin/target/
+crustacean-tests/target/
+
+Cargo.lock
+crustacean-tests/Cargo.lock
