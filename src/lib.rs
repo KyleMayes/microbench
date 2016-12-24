@@ -32,6 +32,34 @@ use std::time::{Duration};
 // Structs
 //================================================
 
+// GeometricSequence _____________________________
+
+/// Generates unique values from a geometric sequence.
+#[derive(Copy, Clone, Debug)]
+pub struct GeometricSequence {
+    current: f64,
+    factor: f64,
+}
+
+impl GeometricSequence {
+    //- Constructors -----------------------------
+
+    /// Constructs a new `GeometricSequence`.
+    pub fn new(start: u64, factor: f64) -> Self {
+        GeometricSequence { current: start as f64, factor: factor }
+    }
+}
+
+impl Iterator for GeometricSequence {
+    type Item = u64;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let start = self.current as u64;
+        while self.current as u64 == start { self.current *= self.factor; }
+        Some(start)
+    }
+}
+
 // Options _______________________________________
 
 /// Micro-benchmarking options.
