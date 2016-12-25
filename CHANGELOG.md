@@ -1,4 +1,4 @@
-## [0.2.0] - UNRELEASED
+## [0.2.0] - 2016-12-25
 
 ### Added
 - Added `alpha` field to `Anaylsis` struct
