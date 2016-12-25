@@ -11,6 +11,26 @@ Inspired by [core_bench](https://github.com/janestreet/core_bench).
 
 Released under the Apache License 2.0.
 
+# Overview
+
+`microbench` uses linear regression to estimate the execution time of code segments. For
+example, the following table might represent data collected by `microbench` about a code
+segment.
+
+| Iterations | Time (ns) |
+|------------|-----------|
+| 1          | 19        |
+| 2          | 25        |
+| 3          | 37        |
+| 4          | 47        |
+| 5          | 56        |
+
+`microbench` of course takes many more than 5 samples and the number of iterations grows
+geometrically rather than linearly, but the concept remains the same. After collecting data like
+this, `microbench` uses ordinary least squares (OLS) linear regression to estimate the actual
+execution time of the code segment. Using OLS with the above data would yield an estimated
+execution time of `9.6` nanoseconds with a goodness of fit (R²) of `0.992`.
+
 # Example
 
 ```rust
