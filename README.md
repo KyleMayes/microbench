@@ -1,5 +1,6 @@
 # microbench
 
+[![crates.io](https://img.shields.io/crates/v/microbench.svg)](https://crates.io/crates/microbench)
 [![Travis CI](https://travis-ci.org/KyleMayes/microbench.svg?branch=master)](https://travis-ci.org/KyleMayes/microbench)
 
 [Documentation](https://kylemayes.github.io/microbench/microbench)
