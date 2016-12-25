@@ -211,9 +211,20 @@ impl Stopwatch {
 // Functions
 //================================================
 
-fn mean<I>(iterator: I) -> f64 where I: Iterator<Item=f64> {
-    let (sum, len) = iterator.fold((0.0, 0), |a, f| (a.0 + f, a.1 + 1));
-    sum / len as f64
+fn kahan_sum<I>(iterator: I) -> f64 where I: Iterator<Item=f64> {
+    let (mut sum, mut correction) = (0.0, 0.0);
+    for f in iterator {
+        let y = f - correction;
+        let t = sum + y;
+        correction = (t - sum) - y;
+        sum = t;
+    }
+    sum
+}
+
+fn mean<I>(iterator: I) -> f64 where I: ExactSizeIterator<Item=f64> {
+    let len = iterator.len();
+    kahan_sum(iterator) / len as f64
 }
 
 /// Analyzes the supplied timing data and returns the resulting analysis.
