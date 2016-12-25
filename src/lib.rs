@@ -60,8 +60,8 @@
 //! Example output:
 //!
 //! ```console
-//! iterative_16 ... bench:          284.161 ns/iter (1.000 R²)
-//! recursive_16 ... bench:          9222.037 ns/iter (1.000 R²)
+//! iterative_16 ... bench:                  273.757 ns/iter (0.999 R²)
+//! recursive_16 ... bench:                9_218.530 ns/iter (0.999 R²)
 //! ```
 
 #![feature(test)]
@@ -213,6 +213,21 @@ impl Stopwatch {
 // Functions
 //================================================
 
+fn display_thousands(number: f64) -> String {
+    let mut integral = String::new();
+    let mut counter = 0;
+    for digit in (number as u64).to_string().chars().rev() {
+        if counter == 3 {
+            integral.insert(0, '_');
+            counter = 0;
+        }
+        counter += 1;
+        integral.insert(0, digit);
+    }
+    let fractional = format!("{}", number.fract());
+    format!("{}.{:.3}", integral, &fractional[2..])
+}
+
 fn kahan_sum<I>(iterator: I) -> f64 where I: Iterator<Item=f64> {
     let (mut sum, mut correction) = (0.0, 0.0);
     for f in iterator {
@@ -261,7 +276,8 @@ pub fn analyze(measurements: &[Measurement]) -> Analysis {
 pub fn bench<T, F>(options: &Options, name: &str, f: F) where F: FnMut() -> T {
     let analysis = analyze(&measure(options, f));
     let prefix = format!("{} ... bench:", name);
-    println!("{:<32} {:.3} ns/iter ({:.3} R²)", prefix, analysis.beta, analysis.r2);
+    let beta = display_thousands(analysis.beta);
+    println!("{:<32} {:>15} ns/iter ({:.3} R²)", prefix, beta, analysis.r2);
 }
 
 /// Measures the execution time of the supplied function and returns the resulting timing data.

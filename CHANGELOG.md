@@ -5,6 +5,7 @@
 
 ### Changed
 - Improved accuracy of results by using the Kahan summation algorithm
+- Improved formatting of printed results
 
 ## [0.1.0] - 2016-12-24
 - Initial release

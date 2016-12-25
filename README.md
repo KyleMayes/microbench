@@ -39,6 +39,6 @@ microbench::bench(&options, "recursive_16", || fibonacci_recursive(16));
 Example output:
 
 ```console
-iterative_16 ... bench:          284.161 ns/iter (1.000 R²)
-recursive_16 ... bench:          9222.037 ns/iter (1.000 R²)
+iterative_16 ... bench:                  273.757 ns/iter (0.999 R²)
+recursive_16 ... bench:                9_218.530 ns/iter (0.999 R²)
 ```
