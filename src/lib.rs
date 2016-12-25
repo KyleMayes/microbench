@@ -14,6 +14,24 @@
 
 //! A micro-benchmarking library.
 //!
+//! `microbench` uses linear regression to estimate the execution time of code segments. For
+//! example, the following table might represent data collected by `microbench` about a code
+//! segment.
+//!
+//! | Iterations | Time (ns) |
+//! |------------|-----------|
+//! | 1          | 19        |
+//! | 2          | 25        |
+//! | 3          | 37        |
+//! | 4          | 47        |
+//! | 5          | 56        |
+//!
+//! `microbench` of course takes many more than 5 samples and the number of iterations grows
+//! geometrically rather than linearly, but the concept remains the same. After collecting data like
+//! this, `microbench` uses ordinary least squares (OLS) linear regression to estimate the actual
+//! execution time of the code segment. Using OLS with the above data would yield an estimated
+//! execution time of `9.6` nanoseconds with a goodness of fit (R²) of `0.992`.
+//!
 //! # Example
 //!
 //! ```
@@ -125,7 +143,7 @@ impl Measurement {
 
 // Options _______________________________________
 
-/// Micro-benchmarking options.
+/// Benchmarking options.
 #[derive(Copy, Clone, Debug)]
 pub struct Options {
     factor: f64,
@@ -141,7 +159,7 @@ impl Default for Options {
 impl Options {
     //- Consumers --------------------------------
 
-    /// Sets the geometric growth factor.
+    /// Sets the geometric growth factor for sample iterations.
     ///
     /// **Default:** `1.01`
     pub fn factor(mut self, factor: f64) -> Self {
@@ -149,7 +167,7 @@ impl Options {
         self
     }
 
-    /// Sets the maximum amount of time a micro-benchmark will run for.
+    /// Sets the maximum amount of time a benchmark will run for.
     ///
     /// **Default:** `Duration::new(5, 0)`
     pub fn maximum(mut self, maximum: Duration) -> Self {
@@ -203,7 +221,7 @@ pub fn analyze(measurements: &[Measurement]) -> Analysis {
     let xmean = mean(measurements.iter().map(|m| m.iterations as f64));
     let ymean = mean(measurements.iter().map(|m| m.nanoseconds as f64));
 
-    // Ordinary least squares estimator.
+    // Ordinary least squares linear regression.
     let numerator = measurements.iter().map(|m| {
         (m.iterations as f64 - xmean) * (m.nanoseconds as f64 - ymean)
     }).sum::<f64>();
@@ -226,14 +244,14 @@ pub fn analyze(measurements: &[Measurement]) -> Analysis {
     Analysis { beta: beta, r2: r2 }
 }
 
-/// Micro-benchmarks the supplied function.
+/// Benchmarks the supplied function and prints the results.
 pub fn bench<T, F>(options: &Options, name: &str, f: F) where F: FnMut() -> T {
     let analysis = analyze(&measure(options, f));
     let prefix = format!("{} ... bench:", name);
     println!("{:<32} {:.3} ns/iter ({:.3} R²)", prefix, analysis.beta, analysis.r2);
 }
 
-/// Measures the execution time of the supplied function and returns the resulting samples.
+/// Measures the execution time of the supplied function and returns the resulting timing data.
 pub fn measure<T, F>(options: &Options, mut f: F) -> Vec<Measurement> where F: FnMut() -> T {
     let mut measurements = vec![];
     let mut sequence = GeometricSequence::new(1, options.factor);
