@@ -87,6 +87,8 @@ use std::time::{Duration};
 /// An analysis of a set of timing data.
 #[derive(Copy, Clone, Debug)]
 pub struct Analysis {
+    /// The y-intercept of the linear regression estimator.
+    pub alpha: f64,
     /// The slope of the linear regression estimator.
     pub beta: f64,
     /// The goodness of fit of the linear regression estimator.
@@ -252,7 +254,7 @@ pub fn analyze(measurements: &[Measurement]) -> Analysis {
     }).sum::<f64>();
     let r2 = numerator / denominator;
 
-    Analysis { beta: beta, r2: r2 }
+    Analysis { alpha: alpha, beta: beta, r2: r2 }
 }
 
 /// Benchmarks the supplied function and prints the results.
