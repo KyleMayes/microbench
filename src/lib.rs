@@ -250,23 +250,23 @@ pub fn analyze(measurements: &[Measurement]) -> Analysis {
     let ymean = mean(measurements.iter().map(|m| m.nanoseconds as f64));
 
     // Ordinary least squares linear regression.
-    let numerator = measurements.iter().map(|m| {
+    let numerator = kahan_sum(measurements.iter().map(|m| {
         (m.iterations as f64 - xmean) * (m.nanoseconds as f64 - ymean)
-    }).sum::<f64>();
-    let denominator = measurements.iter().map(|m| {
+    }));
+    let denominator = kahan_sum(measurements.iter().map(|m| {
         (m.iterations as f64 - xmean).powf(2.0)
-    }).sum::<f64>();
+    }));
     let beta = numerator / denominator;
     let alpha = ymean - (beta * xmean);
     let estimator = |x: u64| (beta * x as f64) + alpha;
 
     // Ordinary least squares goodness of fit.
-    let numerator = measurements.iter().map(|m| {
+    let numerator = kahan_sum(measurements.iter().map(|m| {
         (estimator(m.iterations) - ymean).powf(2.0)
-    }).sum::<f64>();
-    let denominator = measurements.iter().map(|m| {
+    }));
+    let denominator = kahan_sum(measurements.iter().map(|m| {
         (m.nanoseconds as f64 - ymean).powf(2.0)
-    }).sum::<f64>();
+    }));
     let r2 = numerator / denominator;
 
     Analysis { alpha: alpha, beta: beta, r2: r2 }
