@@ -1,4 +1,4 @@
-## [0.2.1] - UNRELEASED
+## [0.2.1] - 2016-12-26
 
 ### Changed
 - Improved accuracy of results by using the Kahan summation algorithm
