@@ -26,7 +26,7 @@ segment.
 | 5          | 56        |
 
 `microbench` of course takes many more than 5 samples and the number of iterations grows
-geometrically rather than linearly, but the concept remains the same. After collecting data like
+geometrically rather than linearly, but the idea remains the same. After collecting data like
 this, `microbench` uses ordinary least squares (OLS) linear regression to estimate the actual
 execution time of the code segment. Using OLS with the above data would yield an estimated
 execution time of `9.6` nanoseconds with a goodness of fit (R²) of `0.992`.
@@ -34,7 +34,6 @@ execution time of `9.6` nanoseconds with a goodness of fit (R²) of `0.992`.
 # Example
 
 ```rust
-use std::time::{Duration};
 use microbench::{self, Options};
 
 fn fibonacci_iterative(n: u64) -> u64 {
@@ -51,7 +50,7 @@ fn fibonacci_recursive(n: u64) -> u64 {
     }
 }
 
-let options = Options::default().maximum(Duration::new(1, 0));
+let options = Options::default();
 microbench::bench(&options, "iterative_16", || fibonacci_iterative(16));
 microbench::bench(&options, "recursive_16", || fibonacci_recursive(16));
 ```
@@ -59,6 +58,6 @@ microbench::bench(&options, "recursive_16", || fibonacci_recursive(16));
 Example output:
 
 ```console
-iterative_16 ... bench:                  273.757 ns/iter (0.999 R²)
-recursive_16 ... bench:                9_218.530 ns/iter (0.999 R²)
+iterative_16 (5.0s) ...                  281.733 ns/iter (0.998 R²)
+recursive_16 (5.0s) ...                9_407.020 ns/iter (0.997 R²)
 ```

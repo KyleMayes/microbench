@@ -1,3 +1,18 @@
+## [0.3.0] - UNRELEASED
+
+### Added
+- Added `memory` option
+- Added specialized benchmarking functions (`bench_drop` and `bench_setup`)
+- Added specialized measuring functions (`measure_drop` and `measure_setup`)
+
+### Removed
+- Removed `time` dependency
+- Removed `GeometricSequence` struct
+- Removed `Stopwatch` struct
+
+### Changed
+- Renamed `maximum` option to `time`
+
 ## [0.2.1] - 2016-12-26
 
 ### Changed
