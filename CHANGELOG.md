@@ -1,4 +1,4 @@
-## [0.3.1] - UNRELEASED
+## [0.3.1] - 2017-01-29
 
 ### Added
 - Added support for the `stable` and `beta` channels of Rust
