@@ -106,6 +106,22 @@ impl Stopwatch {
 // Functions
 //================================================
 
+#[cfg(feature="nightly")]
+pub fn black_box<T>(dummy: T) -> T {
+    use test;
+    test::black_box(dummy)
+}
+#[cfg(not(feature="nightly"))]
+pub fn black_box<T>(dummy: T) -> T {
+    use std::mem;
+    use std::ptr;
+    unsafe {
+        let value = ptr::read_volatile(&dummy);
+        mem::forget(dummy);
+        value
+    }
+}
+
 /// Formats the supplied floating-point number with the supplied thousands separator.
 pub fn thousands(number: f64, separator: char) -> String {
     let mut integral = String::new();

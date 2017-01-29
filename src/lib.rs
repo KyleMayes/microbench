@@ -65,7 +65,7 @@
 //! recursive_16 (5.0s) ...                9_407.020 ns/iter (0.997 R²)
 //! ```
 
-#![feature(test)]
+#![cfg_attr(feature="nightly", feature(test))]
 
 #![warn(missing_copy_implementations, missing_debug_implementations, missing_docs)]
 
@@ -73,6 +73,7 @@
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(feature="clippy", warn(clippy))]
 
+#[cfg(feature="nightly")]
 extern crate test;
 
 mod utility;
@@ -127,6 +128,7 @@ impl Bytes {
 }
 
 // Measurement ___________________________________
+
 /// A measurement of the execution time of a function.
 #[derive(Copy, Clone, Debug)]
 pub struct Measurement {
@@ -339,6 +341,10 @@ pub fn measure_setup<I, S, T, F>(
 }
 
 /// A function that prevents the optimizer from eliminating the supplied value.
+///
+/// This function may not operate correctly or may have poor performance on the stable and beta
+/// channels of Rust. If you are using a nightly release of Rust, enable the `nightly` crate feature
+/// to enable a better implementation of this function.
 pub fn retain<T>(value: T) -> T {
-    test::black_box(value)
+    utility::black_box(value)
 }

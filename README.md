@@ -9,7 +9,14 @@ A micro-benchmarking library.
 
 Inspired by [core_bench](https://github.com/janestreet/core_bench).
 
+Supported on the stable, beta, and nightly Rust channels.
+
 Released under the Apache License 2.0.
+
+**Note:** The `retain` function (used to prevent the optimizer from removing computations) may not
+operate correctly or may have poor performance on the stable and beta channels of Rust. If you are
+using a nightly release of Rust, enable the `nightly` crate feature to enable a better
+implementation of this function.
 
 # Overview
 

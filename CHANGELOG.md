@@ -1,3 +1,11 @@
+## [0.3.1] - UNRELEASED
+
+### Added
+- Added support for the `stable` and `beta` channels of Rust
+
+### Changed
+- Renamed `maximum` option to `time`
+
 ## [0.3.0] - 2016-12-28
 
 ### Added
