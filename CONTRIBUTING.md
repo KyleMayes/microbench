@@ -1,9 +1,5 @@
 # Contributing to microbench
 
-## Issues
-
-Please include the output of `rustc --version --verbose` in your issue.
-
 ## Pull Requests
 
 If you are intending to make a pull request, please make your changes in a branch that originated
