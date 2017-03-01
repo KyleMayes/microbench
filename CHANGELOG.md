@@ -1,4 +1,4 @@
-## [0.3.2] - UNRELEASED
+## [0.3.2] - 2017-02-28
 
 ### Fixed
 - Fixed integer overflow caused by benchmarking extremely fast functions
