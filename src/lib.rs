@@ -217,16 +217,21 @@ fn bench_impl<F>(name: &str, f: F) where F: FnOnce() -> Vec<Measurement> {
     }
 }
 
+const ITERATIONS: u64 = 1_000_000_000_000_000;
+
 fn measure_impl<F>(
     options: &Options, mut f: F
 ) -> Vec<Measurement> where F: FnMut(u64) -> Option<Nanoseconds<u64>> {
     let mut measurements = vec![];
-    let mut sequence = GeometricSequence::new(1, options.factor);
+    let mut sequence = GeometricSequence::new(1, options.factor).take_while(|i| *i <= ITERATIONS);
     let stopwatch = Stopwatch::new();
     while stopwatch.elapsed() < options.time {
-        let iterations = sequence.next().unwrap();
-        if let Some(elapsed) = f(iterations) {
-            measurements.push(Measurement { iterations: iterations, elapsed: elapsed });
+        if let Some(iterations) = sequence.next() {
+            if let Some(elapsed) = f(iterations) {
+                measurements.push(Measurement { iterations: iterations, elapsed: elapsed });
+            } else {
+                break;
+            }
         } else {
             break;
         }
