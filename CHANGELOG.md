@@ -1,3 +1,8 @@
+## [0.3.3] - UNRELEASED
+
+### Removed
+- Removed optional `clippy` dependency
+
 ## [0.3.2] - 2017-02-28
 
 ### Fixed
