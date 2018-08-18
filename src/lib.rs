@@ -55,7 +55,7 @@
 //!
 //! let options = Options::default();
 //! microbench::bench(&options, "iterative_16", || fibonacci_iterative(16));
-//! microbench::bench(&options, "recursive_16", || fibonacci_recursive(16)); panic!("");
+//! microbench::bench(&options, "recursive_16", || fibonacci_recursive(16));
 //! ```
 //!
 //! Example output:
