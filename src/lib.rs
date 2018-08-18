@@ -55,7 +55,7 @@
 //!
 //! let options = Options::default();
 //! microbench::bench(&options, "iterative_16", || fibonacci_iterative(16));
-//! microbench::bench(&options, "recursive_16", || fibonacci_recursive(16));
+//! microbench::bench(&options, "recursive_16", || fibonacci_recursive(16)); panic!("");
 //! ```
 //!
 //! Example output:
@@ -73,13 +73,14 @@
 extern crate test;
 
 mod utility;
+pub mod statistics;
+pub mod time;
 
 use std::cmp;
-use std::fmt;
 use std::mem;
 use std::time::{Duration};
 
-use utility::{GeometricSequence, Statistics, Stopwatch};
+use time::{Nanoseconds, Stopwatch};
 
 //================================================
 // Structs
@@ -123,6 +124,34 @@ impl Bytes {
     }
 }
 
+// GeometricSequence _____________________________
+
+/// Generates unique values from a geometric sequence.
+#[derive(Copy, Clone, Debug)]
+pub struct GeometricSequence {
+    current: f64,
+    factor: f64,
+}
+
+impl GeometricSequence {
+    //- Constructors -----------------------------
+
+    /// Constructs a new `GeometricSequence`.
+    pub fn new(start: u64, factor: f64) -> Self {
+        GeometricSequence { current: start as f64, factor: factor }
+    }
+}
+
+impl Iterator for GeometricSequence {
+    type Item = u64;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let start = self.current as u64;
+        while self.current as u64 == start { self.current *= self.factor; }
+        Some(start)
+    }
+}
+
 // Measurement ___________________________________
 
 /// A measurement of the execution time of a function.
@@ -132,24 +161,6 @@ pub struct Measurement {
     pub iterations: u64,
     /// The amount of time that elapsed while executing the function.
     pub elapsed: Nanoseconds<u64>,
-}
-
-// Nanoseconds ___________________________________
-
-/// A number of nanoseconds.
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Nanoseconds<T>(pub T);
-
-impl fmt::Display for Nanoseconds<u64> {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(formatter, "{:.1}s", self.0 as f64 / 1_000_000_000.0)
-    }
-}
-
-impl From<Duration> for Nanoseconds<u64> {
-    fn from(duration: Duration) -> Nanoseconds<u64> {
-        Nanoseconds((duration.as_secs() * 1_000_000_000) + duration.subsec_nanos() as u64)
-    }
 }
 
 // Options _______________________________________
@@ -237,29 +248,10 @@ fn measure_impl<F>(
 
 /// Analyzes the supplied timing data and returns the resulting analysis.
 pub fn analyze(measurements: &[Measurement]) -> Analysis {
-    let xmean = measurements.iter().map(|m| m.iterations as f64).mean();
-    let ymean = measurements.iter().map(|m| m.elapsed.0 as f64).mean();
-
-    // Ordinary least squares linear regression.
-    let numerator = measurements.iter().map(|m| {
-        (m.iterations as f64 - xmean) * (m.elapsed.0 as f64 - ymean)
-    }).kahan_sum();
-    let denominator = measurements.iter().map(|m| {
-        (m.iterations as f64 - xmean).powf(2.0)
-    }).kahan_sum();
-    let beta = numerator / denominator;
-    let alpha = ymean - (beta * xmean);
-    let estimator = |x: u64| (beta * x as f64) + alpha;
-
-    // Ordinary least squares goodness of fit.
-    let numerator = measurements.iter().map(|m| {
-        (estimator(m.iterations) - ymean).powf(2.0)
-    }).kahan_sum();
-    let denominator = measurements.iter().map(|m| {
-        (m.elapsed.0 as f64 - ymean).powf(2.0)
-    }).kahan_sum();
-    let r2 = numerator / denominator;
-
+    let data = measurements.iter()
+        .map(|m| (m.iterations as f64, m.elapsed.0 as f64))
+        .collect::<Vec<_>>();
+    let (alpha, beta, r2) = statistics::regression(&data);
     Analysis { alpha: Nanoseconds(alpha), beta: Nanoseconds(beta), r2: r2 }
 }
 
@@ -345,7 +337,7 @@ pub fn measure_setup<I, S, T, F>(
 ///
 /// This function may not operate correctly or may have poor performance on the stable and beta
 /// channels of Rust. If you are using a nightly release of Rust, enable the `nightly` crate feature
-/// to enable a better implementation of this function.
+/// to enable a superior implementation of this function.
 pub fn retain<T>(value: T) -> T {
     utility::black_box(value)
 }
