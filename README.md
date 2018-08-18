@@ -1,9 +1,8 @@
 # microbench
 
 [![crates.io](https://img.shields.io/crates/v/microbench.svg)](https://crates.io/crates/microbench)
+[![docs.rs](https://docs.rs/microbench/badge.svg)](https://docs.rs/microbench)
 [![Travis CI](https://travis-ci.org/KyleMayes/microbench.svg?branch=master)](https://travis-ci.org/KyleMayes/microbench)
-
-[Documentation](https://kylemayes.github.io/microbench/microbench)
 
 A micro-benchmarking library (inspired by [core_bench](https://github.com/janestreet/core_bench)).
 
@@ -11,14 +10,12 @@ Supported on the stable, beta, and nightly Rust channels.
 
 Released under the Apache License 2.0.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to this repository.
-
 **Note:** The `retain` function (used to prevent the optimizer from removing computations) may not
 operate correctly or may have poor performance on the stable and beta channels of Rust. If you are
 using a nightly release of Rust, enable the `nightly` crate feature to enable a better
 implementation of this function.
 
-# Overview
+## Overview
 
 `microbench` uses linear regression to estimate the execution time of code segments. For
 example, the following table might represent data collected by `microbench` about a code
@@ -38,7 +35,7 @@ this, `microbench` uses ordinary least squares (OLS) linear regression to estima
 execution time of the code segment. Using OLS with the above data would yield an estimated
 execution time of `9.6` nanoseconds with a goodness of fit (R²) of `0.992`.
 
-# Example
+## Example
 
 ```rust
 use microbench::{self, Options};

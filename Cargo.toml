@@ -10,7 +10,7 @@ license = "Apache-2.0"
 
 description = "A micro-benchmarking library."
 
-documentation = "https://kylemayes.github.io/microbench/microbench"
+documentation = "https://docs.rs/microbench"
 repository = "https://github.com/KyleMayes/microbench"
 
 [features]
