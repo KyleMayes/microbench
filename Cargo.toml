@@ -13,6 +13,8 @@ description = "A micro-benchmarking library."
 documentation = "https://docs.rs/microbench"
 repository = "https://github.com/KyleMayes/microbench"
 
+keywords = ["bench", "benchmark", "microbenchmark"]
+
 [features]
 
 nightly = []
