@@ -14,9 +14,29 @@
 
 //! Miscellaneous utilities.
 
-//================================================
-// Functions
-//================================================
+/// Generates unique values from a geometric sequence.
+#[derive(Copy, Clone, Debug)]
+pub struct GeometricSequence {
+    current: f64,
+    factor: f64,
+}
+
+impl GeometricSequence {
+    /// Constructs a new `GeometricSequence`.
+    pub fn new(start: u64, factor: f64) -> Self {
+        GeometricSequence { current: start as f64, factor }
+    }
+}
+
+impl Iterator for GeometricSequence {
+    type Item = u64;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let start = self.current as u64;
+        while self.current as u64 == start { self.current *= self.factor; }
+        Some(start)
+    }
+}
 
 /// A function that prevents the optimizer from eliminating the supplied value.
 #[cfg(feature="nightly")]
@@ -37,18 +57,22 @@ pub fn black_box<T>(dummy: T) -> T {
     }
 }
 
-/// Formats the supplied floating-point number with the supplied thousands separator.
-pub fn thousands(number: f64, separator: char) -> String {
+/// Returns the supplied floating-point number formatted with the supplied
+/// precision and thousands separator.
+pub fn format_number(number: f64, precision: usize, separator: char) -> String {
     let mut integral = String::new();
+
     let mut counter = 0;
     for digit in (number as u64).to_string().chars().rev() {
         if counter == 3 {
             integral.insert(0, separator);
             counter = 0;
         }
+
         counter += 1;
         integral.insert(0, digit);
     }
-    let fractional = format!("{:.3}", number.fract());
+
+    let fractional = format!("{:.*}", precision, number.fract());
     format!("{}.{}", integral, &fractional[2..])
 }

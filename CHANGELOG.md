@@ -1,7 +1,13 @@
 ## [0.4.0] - UNRELEASED
 
+### Removed
+- Removed `GeometricSequence` struct
+
 ### Changed
 - Upgraded to Rust 2018
+- Replaced `regression` function with `Model` struct
+- Replaced `Statistics` trait with `Kahan` trait
+- Replaced `Stopwatch::new` method with `Default` implementation
 
 ## [0.3.3] - 2018-08-18
 
