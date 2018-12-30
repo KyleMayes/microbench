@@ -80,7 +80,7 @@ use std::cmp;
 use std::mem;
 use std::time::{Duration};
 
-use time::{Nanoseconds, Stopwatch};
+use crate::time::{Nanoseconds, Stopwatch};
 
 //================================================
 // Structs

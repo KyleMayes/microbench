@@ -1,3 +1,8 @@
+## [0.4.0] - UNRELEASED
+
+### Changed
+- Upgraded to Rust 2018
+
 ## [0.3.3] - 2018-08-18
 
 ### Removed
