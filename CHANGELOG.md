@@ -1,4 +1,4 @@
-## [0.4.0] - UNRELEASED
+## [0.4.0] - 2018-12-30
 
 ### Removed
 - Removed `GeometricSequence` struct
