@@ -1,4 +1,4 @@
-## [0.5.0] - UNRELEASED
+## [0.5.0] - 2019-04-03
 
 ### Fixed
 - Updated `retain` implementation for latest nightly
