@@ -41,8 +41,8 @@ impl Iterator for GeometricSequence {
 /// A function that prevents the optimizer from eliminating the supplied value.
 #[cfg(feature="nightly")]
 pub fn black_box<T>(dummy: T) -> T {
-    use test;
-    test::black_box(dummy)
+    use std::hint;
+    hint::black_box(dummy)
 }
 
 /// A function that prevents the optimizer from eliminating the supplied value.

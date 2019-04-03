@@ -1,3 +1,8 @@
+## [0.5.0] - UNRELEASED
+
+### Fixed
+- Updated `retain` implementation for latest nightly
+
 ## [0.4.0] - 2018-12-30
 
 ### Removed
